@@ -7,9 +7,19 @@ var Header = React.createClass({
 });
 
 var SearchBar = React.createClass({
+  getInitialState: function() {
+    return { searchKey: "" };
+  },
+
+  searchHandler: function(event) {
+    var searchKey = event.target.value;
+    this.setState({ searchKey: searchKey });
+    this.props.searchHandler(searchKey);
+  },
+
   render: function () {
     return (
-      <input type="search" />
+      <input type="search" value={this.state.symbol} onChange={this.searchHandler} />
     );
   }
 });
@@ -49,6 +59,10 @@ var EmployeeListItem = React.createClass({
        L EmployeeListItem
  */
 var HomePage = React.createClass({
+  searchHandler: function(searchKey) {
+    alert('Search key: ' + searchKey);
+  },
+
   render: function () {
     var employees = [
       {firstName: 'Christophe', lastName: 'Coenraets'},
@@ -59,7 +73,7 @@ var HomePage = React.createClass({
     return (
       <div>
         <Header text="Employee Directory"/>
-        <SearchBar />
+        <SearchBar searchHandler={this.searchHandler}/>
         <EmployeeList employees={employees}/>
       </div>
     );
