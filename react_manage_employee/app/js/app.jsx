@@ -1,3 +1,6 @@
+// employeeServiceを読み込む
+require('js/data');
+
 var Header = React.createClass({
   render: function () {
     return (
@@ -17,6 +20,7 @@ var SearchBar = React.createClass({
     this.props.searchHandler(searchKey);
   },
 
+  // TODO why this.state.symbol insted of searchKey
   render: function () {
     return (
       <input type="search" value={this.state.symbol} onChange={this.searchHandler} />
@@ -59,29 +63,29 @@ var EmployeeListItem = React.createClass({
        L EmployeeListItem
  */
 var HomePage = React.createClass({
+  getInitialState: function() {
+    return { employees: empoyeeService.allEmployees() };
+  },
+
   searchHandler: function(searchKey) {
-    alert('Search key: ' + searchKey);
+    this.props.service.findByName(searchKey).done(function(result) {
+      this.setState({ searchKey: searchKey, employees: result });
+    }.bind(this));
   },
 
   render: function () {
-    var employees = [
-      {firstName: 'Christophe', lastName: 'Coenraets'},
-      {firstName: 'Lisa',       lastName: 'Jones'},
-      {firstName: 'John',       lastName: 'Smith'}
-    ];
-
     return (
       <div>
         <Header text="Employee Directory"/>
         <SearchBar searchHandler={this.searchHandler}/>
-        <EmployeeList employees={employees}/>
+        <EmployeeList employees={this.state.employees}/>
       </div>
     );
   }
 });
 
 React.render(
-  <HomePage />,
+  <HomePage service={empoyeeService}/>,
   document.body
 );
 
