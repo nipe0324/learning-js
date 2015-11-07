@@ -39,7 +39,6 @@ var router = (function () {
         load: load,
         start: start
     };
-
 }());
 
 var employeeService = (function() {
@@ -108,7 +107,10 @@ var employeeService = (function() {
 var Header = React.createClass({
   render: function () {
     return (
-      <h1 className="title">{this.props.text}</h1>
+      <header className="bar bar-nav">
+        <a href="#" className={"icon icon-left-nav pull-left" + (this.props.back==="true" ? "": " hidden")}></a>
+        <h1 className="title">{this.props.text}</h1>
+      </header>
     );
   }
 });
@@ -127,7 +129,9 @@ var SearchBar = React.createClass({
   // TODO why this.state.symbol insted of searchKey
   render: function () {
     return (
-      <input type="search" value={this.state.symbol} onChange={this.searchHandler} />
+      <div className="bar bar-standard bar-header-secondary">
+        <input type="search" value={this.state.symbol} onChange={this.searchHandler} />
+      </div>
     );
   }
 });
@@ -140,7 +144,7 @@ var EmployeeList = React.createClass({
       );
     })
     return (
-      <ul>
+      <ul className="table-view">
         {items}
       </ul>
     );
@@ -150,8 +154,9 @@ var EmployeeList = React.createClass({
 var EmployeeListItem = React.createClass({
   render: function () {
     return (
-      <li>
+      <li className="table-view-cell media">
         <a href={"#employees/" + this.props.employee.id}>
+          <img className="media-object small pull-left" src={"pics/" + this.props.employee.firstName + "_" + this.props.employee.lastName + ".jpg"}/>
           {this.props.employee.firstName} {this.props.employee.lastName}
         </a>
       </li>
@@ -185,9 +190,11 @@ var HomePage = React.createClass({
   render: function () {
     return (
       <div>
-        <Header text="Employee Directory"/>
+        <Header text="Employee Directory" back="false"/>
         <SearchBar searchHandler={this.searchHandler}/>
-        <EmployeeList employees={this.state.employees}/>
+        <div className="content">
+          <EmployeeList employees={this.state.employees}/>
+        </div>
       </div>
     );
   }
@@ -206,9 +213,52 @@ var EmployeePage = React.createClass({
   render: function () {
     return (
       <div>
-        <Header text="Employee Details"/>
-        <h3>{this.state.employee.firstName} {this.state.employee.lastName}</h3>
-        {this.state.employee.title}
+        <Header text="Employee" back="true"/>
+        <div className="card">
+          <ul className="table-view">
+            <li className="table-view-cell media">
+              <img className="media-object big pull-left" src={"pics/" + this.state.employee.firstName + "_" + this.state.employee.lastName + ".jpg" }/>
+              <h1>{this.state.employee.firstName} {this.state.employee.lastName}</h1>
+              <p>{this.state.employee.title}</p>
+            </li>
+            <li className="table-view-cell media">
+              <a href={"tel:" + this.state.employee.officePhone} className="push-right">
+                <span className="media-object pull-left icon icon-call"></span>
+                <div className="media-body">
+                Call Office
+                  <p>{this.state.employee.officePhone}</p>
+                </div>
+              </a>
+            </li>
+            <li className="table-view-cell media">
+              <a href={"tel:" + this.state.employee.mobilePhone} className="push-right">
+                <span className="media-object pull-left icon icon-call"></span>
+                <div className="media-body">
+                Call Mobile
+                  <p>{this.state.employee.mobilePhone}</p>
+                </div>
+              </a>
+            </li>
+            <li className="table-view-cell media">
+              <a href={"sms:" + this.state.employee.mobilePhone} className="push-right">
+                <span className="media-object pull-left icon icon-sms"></span>
+                <div className="media-body">
+                SMS
+                  <p>{this.state.employee.mobilePhone}</p>
+                </div>
+              </a>
+            </li>
+            <li className="table-view-cell media">
+              <a href={"mailto:" + this.state.employee.email} className="push-right">
+                <span className="media-object pull-left icon icon-email"></span>
+                <div className="media-body">
+                Email
+                  <p>{this.state.employee.email}</p>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
