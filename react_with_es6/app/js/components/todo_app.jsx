@@ -1,3 +1,5 @@
+import Todo  from './../models/todo';
+import Todos from './../collections/todos';
 import Header from './header';
 import TodoList from './todo_list';
 import Footer from './footer';
@@ -6,11 +8,11 @@ export default class TodoApp extends React.Component {
   constructor() {
     super();
 
-    let todos = [
-      { id: 1, title: 'Todo 1', completed: false },
-      { id: 2, title: 'Todo 2', completed: false },
-      { id: 3, title: 'Todo 3', completed: true }
-    ];
+    let todos = new Todos([
+      new Todo('Todo 1', false),
+      new Todo('Todo 2', false),
+      new Todo('Todo 3', true)
+    ]);
 
     this.state = {
       nowShowing: 'all',
@@ -20,14 +22,13 @@ export default class TodoApp extends React.Component {
   }
 
   onCommitTodo(todo) {
-    this.state.todos.push(todo);
+    this.state.todos.add(todo);
     this.setState(this.state); // setStateでレンダーが行われる
   }
 
   toggle(todoToToggle) {
-    this.state.todos.forEach((todo) => {
-      // Modelを導入してからかな
-    });
+    this.state.todos.toggle(todoToToggle);
+    this.setState({ todos: this.state.todos });
   }
 
   render() {

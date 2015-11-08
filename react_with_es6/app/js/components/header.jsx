@@ -1,3 +1,5 @@
+import Todo from './../models/todo';
+
 export default class Header extends React.Component {
   handleNewTodo (event) {
     if (event.keyCode !== 13) { // 13: Enterキー
@@ -9,7 +11,8 @@ export default class Header extends React.Component {
     if (!todoTitle) {
       return;
     }
-    this.props.onCommitTodo({ title: todoTitle, completed: false });
+    let newTodo = new Todo(todoTitle, false);
+    this.props.onCommitTodo(newTodo);
     event.target.value = '';
     return;
   }
