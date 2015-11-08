@@ -3,7 +3,7 @@ export default class Footer extends React.Component {
     return (
       <footer className="footer">
         <span className="todo-count">
-          残り<strong>{this.props.todos.length}</strong>
+          残り<strong>{this.props.todos.completed().length()}</strong>
         </span>
 
         <ul className="filters">

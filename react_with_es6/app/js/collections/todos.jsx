@@ -23,8 +23,21 @@ export default class Todos {
     }
   }
 
+  completed() {
+    let completedTodos = this.todos.filter((todo) => {
+      if (!todo.completed) {
+        return todo;
+      }
+    });
+    return new Todos(completedTodos);
+  }
+
   map(callback) {
     return this.todos.map(callback);
+  }
+
+  length() {
+    return this.todos.length;
   }
 
   index(todo) {
