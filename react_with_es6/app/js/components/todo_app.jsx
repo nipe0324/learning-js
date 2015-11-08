@@ -22,6 +22,7 @@ export default class TodoApp extends React.Component {
   }
 
   onCommitTodo(todo) {
+    // ok? https://facebook.github.io/react/docs/component-api.html#setstate
     this.state.todos.add(todo);
     this.setState(this.state); // setStateでレンダーが行われる
   }
@@ -31,13 +32,19 @@ export default class TodoApp extends React.Component {
     this.setState({ todos: this.state.todos });
   }
 
+  destroy(todoToDestroy) {
+    this.state.todos.destroy(todoToDestroy);
+    this.setState({ todos: this.state.todos });
+  }
+
   render() {
     return (
       <div>
         <Header onCommitTodo={this.onCommitTodo.bind(this)}/>
         <TodoList
           todos={this.state.todos}
-          onToggle={this.toggle.bind(this)}/>
+          onToggle={this.toggle.bind(this)}
+          onDestroy={this.destroy.bind(this)}/>
         <Footer todos={this.state.todos}/>
       </div>
     );

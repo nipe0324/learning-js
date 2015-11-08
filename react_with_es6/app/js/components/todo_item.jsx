@@ -9,7 +9,7 @@ export default class TodoItem extends React.Component {
             checked={this.props.todo.completed}
             onChange={this.props.onToggle} />
           <label>{this.props.todo.title}</label>
-          <button className="destroy"/>
+          <button className="destroy" onClick={this.props.onDestroy}/>
           <input className="edit"/>
         </div>
       </li>

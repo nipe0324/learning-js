@@ -7,7 +7,8 @@ export default class TodoList extends React.Component {
         <TodoItem
           key={todo.id}
           todo={todo}
-          onToggle={this.props.onToggle.bind(this, todo)}/>
+          onToggle={this.props.onToggle.bind(this, todo)}
+          onDestroy={this.props.onDestroy.bind(this, todo)}/>
       );
     });
     return (
