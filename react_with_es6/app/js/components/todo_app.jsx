@@ -28,8 +28,26 @@ export default class TodoApp extends React.Component {
   }
 
   toggle(todoToToggle) {
+    // 直でTODOをtoggleできる?
     this.state.todos.toggle(todoToToggle);
     this.setState({ todos: this.state.todos });
+  }
+
+  edit(todoToEdit) {
+    this.state.editing = todoToEdit.id;
+    this.setState(this.state);
+  }
+
+  save(todoToSave, newTitle) {
+    console.log(todoToSave);
+    this.state.todos.save(todoToSave, newTitle);
+    this.state.editing = null;
+    this.setState(this.state);
+  }
+
+  cancel() {
+    this.state.editing = null;
+    this.setState(this.state);
   }
 
   destroy(todoToDestroy) {
@@ -43,7 +61,11 @@ export default class TodoApp extends React.Component {
         <Header onCommitTodo={this.onCommitTodo.bind(this)}/>
         <TodoList
           todos={this.state.todos}
+          editing={this.state.editing}
           onToggle={this.toggle.bind(this)}
+          onDoubleClick={this.edit.bind(this)}
+          onSave={this.save.bind(this)}
+          onCancel={this.cancel.bind(this)}
           onDestroy={this.destroy.bind(this)}/>
         <Footer todos={this.state.todos}/>
       </div>

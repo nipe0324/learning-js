@@ -7,6 +7,14 @@ export default class Todos {
     this.todos.push(todo);
   }
 
+  save(todo, newTitle) {
+    console.log(newTitle);
+    let index = this.index(todo);
+    let updateTodo = this.todos[index];
+    updateTodo.title = newTitle;
+    updateTodo.save();
+  }
+
   destroy(todo) {
     let index = this.index(todo);
     if (index >= 0) {

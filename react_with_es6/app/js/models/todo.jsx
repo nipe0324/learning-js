@@ -11,6 +11,10 @@ export default class Todo {
     this.completed = !this.completed;
   }
 
+  save() {
+    console.log('Not implement Todo#save');
+  }
+
   destroy() {
     console.log('Not implement Todo#destroy');
   }
