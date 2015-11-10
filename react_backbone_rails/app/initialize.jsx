@@ -1,6 +1,8 @@
+import TodoApp from './js/components/todo_app';
+
 document.addEventListener('DOMContentLoaded', function() {
   React.render(
-    <h1>TodoApp</h1>,
+    <TodoApp />,
     document.getElementsByClassName('todoapp')[0]
   );
 }, false);
