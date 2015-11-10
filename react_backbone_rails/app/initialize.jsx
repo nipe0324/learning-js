@@ -1,7 +1,6 @@
-var routes = require('routes');
-
 document.addEventListener('DOMContentLoaded', function() {
-  ReactRouter.run(routes, ReactRouter.HashLocation, function(Root) {
-    React.render(<Root/>, document.body);
-  });
+  React.render(
+    <h1>TodoApp</h1>,
+    document.getElementsByClassName('todoapp')[0]
+  );
 }, false);

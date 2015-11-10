@@ -9,3 +9,9 @@ exports.config =
       joinTo: 'stylesheets/app.css'
     templates:
       joinTo: 'javascripts/app.js'
+  plugins:
+    babel:
+      ignore: [
+          /^(bower_components|vendor)/
+      ]
+      pattern: /\.(es6|jsx)$/
