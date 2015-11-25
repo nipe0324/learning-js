@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>React + jQuery UI Sortable Example</title>
+  <style type="text/css">
+    body{
+      color: #fff;
+      font-family: Helvetica, sans-serif;
+      font-size: 20px;
+    }
+    #list{
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 0;
+    }
+    li{
+      padding: 10px;
+      margin: 0 0 10px;
+      cursor: move;
+      list-style: none;
+      border-radius: 3px;
+    }
+    li[data-id="a"]{
+      background-color: #F44336;
+    }
+    li[data-id="b"]{
+      background-color: #2196F3;
+    }
+    li[data-id="c"]{
+      background-color: #009688;
+    }
+    .ui-sortable-placeholder{
+      visibility: visible !important;
+      border: 2px dashed #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="list"></div>
+  <script type="text/javascript" src="dist/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="dist/react/react.min.js"></script>
+  <script type="text/javascript" src="dist/react/react-dom.min.js"></script>
+  <script type="text/javascript" src="dist/jquery-ui/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="dist/lodash/lodash.min.js"></script>
+  <script type="text/javascript" src="dist/component.js"></script>
+</body>
+</html>
