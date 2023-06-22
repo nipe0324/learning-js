@@ -2,6 +2,7 @@
 import { Routes, Route, HashRouter } from 'react-router-dom';
 
 import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
 
 const App = () => {
   return (
@@ -10,7 +11,16 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<h1>Hello World</h1>} />
+          {/* <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/article/:URLSlug" element={<Article />} />
+          <Route path="/editor" element={<NewArticle />} />
+          <Route path="/editor/:URLSlug" element={<EditArticle />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile/:userId/*" element={<Profile />} />
+          <Route path="*" element={<Navigate to="/" replace={true} />} /> */}
         </Routes>
+        <Footer />
       </HashRouter>
     </>
   );
