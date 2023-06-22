@@ -4,13 +4,15 @@ import { Routes, Route, HashRouter } from 'react-router-dom';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 
+import Home from './pages/Home';
+
 const App = () => {
   return (
     <>
       <HashRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<h1>Hello World</h1>} />
+          <Route path="/" element={<Home />} />
           {/* <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/article/:URLSlug" element={<Article />} />
