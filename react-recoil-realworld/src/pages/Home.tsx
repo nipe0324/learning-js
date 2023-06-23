@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useRecoilValue } from 'recoil';
 
-// import Feed from '../components/feed/Feed';
+import Feed from '../components/feed/Feed';
 import LinkTag from '../components/tag/LinkTag';
 import Loading from '../components/common/Loading';
 
@@ -14,15 +14,20 @@ const Home = () => {
   const isLoggedIn = false;
   const navigate = useNavigate();
 
-  const onClickTag = (tag: string) => {
-    setToggle(2);
-    setTagName(tag);
-  };
-
   const [toggle, setToggle] = useState(isLoggedIn ? 0 : 1);
   const [tagList, setTagList] = useState<string[]>([]);
   const [tagListLoading, setTagListLoading] = useState(false);
   const [tagName, setTagName] = useState('');
+
+  const queryList = useMemo(
+    () => ['/feed?', '?', `?tag=${tagName}&`],
+    [tagName]
+  );
+
+  const onClickTag = (tag: string) => {
+    setToggle(2);
+    setTagName(tag);
+  };
 
   return (
     <>
@@ -82,7 +87,7 @@ const Home = () => {
                   </li>
                 </ul>
               </div>
-              {/* <Feed query={queryList[toggle]} url="/" limit={10} /> */}
+              <Feed query={queryList[toggle]} url="/" limit={10} />
             </div>
 
             <div className="col-md-3">
@@ -92,7 +97,7 @@ const Home = () => {
                   {tagListLoading ? (
                     <Loading height={10} />
                   ) : (
-                    tagList.map(tag => (
+                    tagList.map((tag) => (
                       <LinkTag
                         key={tag}
                         name={tag}
