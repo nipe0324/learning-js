@@ -8,7 +8,7 @@ import LinkTag from '../components/tag/LinkTag';
 import Loading from '../components/common/Loading';
 
 // import { isLoggedInAtom } from '../atom';
-// import { getTags } from '../api/tags';
+import { getTags } from '../api/tags';
 
 const Home = () => {
   const isLoggedIn = false;
@@ -28,6 +28,23 @@ const Home = () => {
     setToggle(2);
     setTagName(tag);
   };
+
+  useEffect(() => {
+    const initTags = async () => {
+      setTagListLoading(true);
+      try {
+        const { tags } = await getTags();
+        setTagList(tags);
+      } catch {
+        console.error('error');
+      }
+      setTagListLoading(false);
+    };
+
+    initTags();
+  }, []);
+
+  useEffect(() => navigate('/', { replace: true }), [navigate]);
 
   return (
     <>
