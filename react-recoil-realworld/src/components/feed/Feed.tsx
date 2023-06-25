@@ -5,7 +5,7 @@ import ArticlePreview from '../article/ArticlePreview';
 import Loading from '../common/Loading';
 // import Pagination from '../common/Pagination';
 
-// import { getArticles } from '../../api/article';
+import { getArticles } from '../../api/article';
 import { ArticleProps } from '../../types';
 import { pageAtom } from '../../atom';
 
@@ -24,6 +24,32 @@ const Feed = ({ query, url, limit }: FeedProps) => {
   useEffect(() => {
     setPage(1);
   }, [setPage, query]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const initArticles = async () => {
+      setLoading(true);
+      try {
+        const { articles, articlesCount } = await getArticles(
+          `${query}limit=${limit}&offset=${10 * (page - 1)}`,
+          signal
+        );
+        setArticles(articles);
+        setArticlesCount(articlesCount);
+        setLoading(false);
+      } catch {
+        console.error('error');
+      }
+    };
+
+    initArticles();
+
+    return () => {
+      controller.abort();
+    };
+  }, [limit, query, page]);
 
   if (loading) {
     return (
