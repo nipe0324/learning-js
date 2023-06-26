@@ -1,14 +1,55 @@
-// import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, HashRouter } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
+import Loading from './components/common/Loading';
 
 import Home from './pages/Home';
 import Register from './pages/Register';
 import NewArticle from './pages/NewArticle';
 
+import { getUser } from './api/user';
+import { isLoggedInAtom, userAtom } from './atom';
+
 const App = () => {
+  const [loading, setLoading] = useState(true);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
+  const setUser = useSetRecoilState(userAtom);
+
+  useEffect(() => {
+    const initApp = async () => {
+      const hasToken = !!localStorage.getItem('jwtToken');
+      if (!hasToken) return;
+
+      try {
+        const data = await getUser();
+        const { email, username, bio, image } = data.user;
+        setIsLoggedIn(true);
+        setUser({
+          email: email,
+          username: username,
+          bio: bio,
+          image: image,
+        });
+      } catch (e: any) {
+        localStorage.removeItem('jwtToken');
+        setIsLoggedIn(false);
+        setUser({
+          email: '',
+          username: '',
+          bio: '',
+          image: '',
+        });
+      }
+    };
+
+    initApp().then(() => setLoading(false));
+  }, [setIsLoggedIn, setUser]);
+
+  if (loading) return <Loading height={75} />;
+
   return (
     <>
       <HashRouter>
