@@ -34,7 +34,9 @@ const NewArticle = () => {
 
   const { title, description, body, tag, tagList } = article;
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = event.target;
     setArticle({
       ...article,
@@ -46,17 +48,24 @@ const NewArticle = () => {
     if (event.key === 'Enter') {
       event.preventDefault();
       if (!tagList.includes(tag)) {
-        setArticle({
-          ...article,
-          tag: '',
-          tagList: [...tagList, tag],
-        });
+        addTag(tag);
       }
     }
   };
 
+  const addTag = (newTag: string) => {
+    setArticle({
+      ...article,
+      tag: '',
+      tagList: [...tagList, newTag],
+    });
+  };
+
   const removeTag = (target: string) => {
-    setArticle({ ...article, tagList: tagList.filter((tag: string) => tag !== target )});
+    setArticle({
+      ...article,
+      tagList: tagList.filter((tag: string) => tag !== target),
+    });
   };
 
   const submitArticle = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -90,7 +99,6 @@ const NewArticle = () => {
     }
   };
 
-
   if (!isLoggedIn) navigate('/', { replace: true });
 
   return (
@@ -111,7 +119,7 @@ const NewArticle = () => {
                 {error.body && <li>body can't be blank</li>}
               </ul>
 
-              <form onSubmit={event => submitArticle(event)}>
+              <form onSubmit={(event) => submitArticle(event)}>
                 <fieldset>
                   <fieldset className="form-group">
                     <input
@@ -121,7 +129,7 @@ const NewArticle = () => {
                       name="title"
                       onChange={onChange}
                       disabled={disabled}
-                     />
+                    />
                   </fieldset>
                   <fieldset className="form-group">
                     <input
