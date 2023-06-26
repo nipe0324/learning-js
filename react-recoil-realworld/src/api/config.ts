@@ -20,8 +20,8 @@ const fetchWrap = async ({ method, url, body, signal }: fetchWrapProps) => {
   try {
     const { data } =
       (method === 'get' && (await axios.get(url, config))) ||
-      (method === 'post' && (await axios.post(url, config))) ||
-      (method === 'put' && (await axios.put(url, config))) ||
+      (method === 'post' && (await axios.post(url, body, config))) ||
+      (method === 'put' && (await axios.put(url, body, config))) ||
       (method === 'delete' && (await axios.delete(url, config))) ||
       {};
 

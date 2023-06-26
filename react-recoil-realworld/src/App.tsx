@@ -5,6 +5,7 @@ import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 
 import Home from './pages/Home';
+import Register from './pages/Register';
 import NewArticle from './pages/NewArticle';
 
 const App = () => {
@@ -14,9 +15,9 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/editor" element={<NewArticle />} />
           {/* <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/article/:URLSlug" element={<Article />} />
           <Route path="/editor/:URLSlug" element={<EditArticle />} />
           <Route path="/settings" element={<Settings />} />

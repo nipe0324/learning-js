@@ -1,3 +1,24 @@
+export interface AuthProps {
+  email: string;
+  password: string;
+  username?: string;
+}
+
+export interface UserProps {
+  email: string;
+  password: string;
+  username: string;
+  bio: string;
+  image: string;
+}
+
+export interface ProfileProps {
+  username: string;
+  bio: string;
+  image: string;
+  following: boolean;
+}
+
 export interface ArticleProps {
   slug: string;
   title: string;
@@ -10,9 +31,9 @@ export interface ArticleProps {
   body?: string;
 }
 
-export interface ProfileProps {
-  username: string;
-  bio: string;
-  image: string;
-  following: boolean;
+export interface CommentProps {
+  id: number;
+  createdAt: string;
+  body: string;
+  author: ProfileProps;
 }

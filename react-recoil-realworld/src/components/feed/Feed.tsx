@@ -39,8 +39,8 @@ const Feed = ({ query, url, limit }: FeedProps) => {
         setArticles(articles);
         setArticlesCount(articlesCount);
         setLoading(false);
-      } catch {
-        console.error('error');
+      } catch (error: any) {
+        console.error('error', error);
       }
     };
 
