@@ -11,3 +11,6 @@ interface articleApiBodyProps {
 
 export const getArticles = (query: string, signal: AbortSignal) =>
   GET(`/articles${query}`, signal);
+
+export const createArticle = (body: articleApiBodyProps) =>
+  POST('/articles', body);
