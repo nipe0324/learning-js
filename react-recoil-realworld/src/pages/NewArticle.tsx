@@ -12,7 +12,7 @@ interface ArticleProps {
   description: string;
   body: string;
   tag: string;
-  tagList: string[];
+  tagsList: string[];
 }
 
 const NewArticle = () => {
@@ -21,7 +21,7 @@ const NewArticle = () => {
     description: '',
     body: '',
     tag: '',
-    tagList: [],
+    tagsList: [],
   });
   const [error, setError] = useState({
     title: '',
@@ -32,7 +32,7 @@ const NewArticle = () => {
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(isLoggedInAtom);
 
-  const { title, description, body, tag, tagList } = article;
+  const { title, description, body, tag, tagsList } = article;
 
   const onChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -47,7 +47,7 @@ const NewArticle = () => {
   const onEnterAddTag = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (!tagList.includes(tag)) {
+      if (!tagsList.includes(tag)) {
         addTag(tag);
       }
     }
@@ -57,14 +57,14 @@ const NewArticle = () => {
     setArticle({
       ...article,
       tag: '',
-      tagList: [...tagList, newTag],
+      tagsList: [...tagsList, newTag],
     });
   };
 
   const removeTag = (target: string) => {
     setArticle({
       ...article,
-      tagList: tagList.filter((tag: string) => tag !== target),
+      tagsList: tagsList.filter((tag: string) => tag !== target),
     });
   };
 
@@ -77,10 +77,10 @@ const NewArticle = () => {
           title: title,
           description: description,
           body: body,
-          tagList: tagList,
+          tagsList: tagsList,
         },
       });
-      navigate(`article/${article.slug}`);
+      navigate(`/article/${article.slug}`);
     } catch (e: any) {
       if (e.response.status === 422) {
         const errorMessage = e.response.data.errors;
@@ -168,7 +168,7 @@ const NewArticle = () => {
                   </fieldset>
 
                   <div>
-                    {tagList.map((tag) => (
+                    {tagsList.map((tag) => (
                       <EditorTag
                         key={tag}
                         name={tag}

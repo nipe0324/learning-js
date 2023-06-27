@@ -5,7 +5,7 @@ interface articleApiBodyProps {
     title: string;
     description: string;
     body: string;
-    tagList: string[];
+    tagsList: string[];
   };
 }
 
@@ -14,3 +14,10 @@ export const getArticles = (query: string, signal: AbortSignal) =>
 
 export const createArticle = (body: articleApiBodyProps) =>
   POST('/articles', body);
+
+export const getArticle = (slug: string) => GET(`/articles/${slug}`);
+
+export const updateArticle = (slug: string, body: articleApiBodyProps) =>
+  PUT(`/articles/${slug}`, body);
+
+export const deleteArticle = (slug: string) => DELETE(`/articles/${slug}`);

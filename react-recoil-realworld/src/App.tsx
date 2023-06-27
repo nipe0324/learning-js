@@ -8,6 +8,7 @@ import Loading from './components/common/Loading';
 
 import Home from './pages/Home';
 import Register from './pages/Register';
+import Article from './pages/Article';
 import NewArticle from './pages/NewArticle';
 
 import { getUser } from './api/user';
@@ -57,10 +58,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/article/:urlSlug" element={<Article />} />
           <Route path="/editor" element={<NewArticle />} />
           {/* <Route path="/login" element={<Login />} />
-          <Route path="/article/:URLSlug" element={<Article />} />
-          <Route path="/editor/:URLSlug" element={<EditArticle />} />
+          <Route path="/editor/:urlSlug" element={<EditArticle />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile/:userId/*" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} /> */}

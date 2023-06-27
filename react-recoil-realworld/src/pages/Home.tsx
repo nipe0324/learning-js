@@ -15,8 +15,8 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [toggle, setToggle] = useState(isLoggedIn ? 0 : 1);
-  const [tagList, setTagList] = useState<string[]>([]);
-  const [tagListLoading, setTagListLoading] = useState(false);
+  const [tagsList, setTagsList] = useState<string[]>([]);
+  const [tagsListLoading, setTagsListLoading] = useState(false);
   const [tagName, setTagName] = useState('');
 
   const queryList = useMemo(
@@ -31,14 +31,14 @@ const Home = () => {
 
   useEffect(() => {
     const initTags = async () => {
-      setTagListLoading(true);
+      setTagsListLoading(true);
       try {
         const { tags } = await getTags();
-        setTagList(tags);
+        setTagsList(tags);
       } catch {
         console.error('error');
       }
-      setTagListLoading(false);
+      setTagsListLoading(false);
     };
 
     initTags();
@@ -111,10 +111,10 @@ const Home = () => {
               <div className="sidebar">
                 <p>Popular Tags</p>
                 <div className="tag-list">
-                  {tagListLoading ? (
+                  {tagsListLoading ? (
                     <Loading height={10} />
                   ) : (
-                    tagList.map((tag) => (
+                    tagsList.map((tag) => (
                       <LinkTag
                         key={tag}
                         name={tag}

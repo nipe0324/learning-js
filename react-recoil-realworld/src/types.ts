@@ -23,7 +23,7 @@ export interface ArticleProps {
   slug: string;
   title: string;
   description: string;
-  tagList: string[];
+  tagsList: string[];
   createdAt: string;
   favorited: boolean;
   favoritesCount: number;
