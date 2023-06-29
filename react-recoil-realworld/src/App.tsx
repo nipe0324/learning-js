@@ -7,6 +7,7 @@ import Footer from './components/footer/Footer';
 import Loading from './components/common/Loading';
 
 import Home from './pages/Home';
+import Login from './pages/Login';
 import Register from './pages/Register';
 import Article from './pages/Article';
 import NewArticle from './pages/NewArticle';
@@ -57,11 +58,11 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/article/:urlSlug" element={<Article />} />
           <Route path="/editor" element={<NewArticle />} />
-          {/* <Route path="/login" element={<Login />} />
-          <Route path="/editor/:urlSlug" element={<EditArticle />} />
+          {/* <Route path="/editor/:urlSlug" element={<EditArticle />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile/:userId/*" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} /> */}
