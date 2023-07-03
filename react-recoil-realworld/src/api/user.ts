@@ -8,4 +8,4 @@ export const loginUser = (body: { user: AuthProps }) =>
 
 export const getUser = () => GET('/user');
 
-export const putUser = (body: { user: UserProps }) => PUT('/user', body);
+export const updateUser = (body: { user: UserProps }) => PUT('/user', body);

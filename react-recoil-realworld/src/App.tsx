@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Article from './pages/Article';
 import NewArticle from './pages/NewArticle';
+import Settings from './pages/Settings';
 
 import { getUser } from './api/user';
 import { isLoggedInAtom, userAtom } from './atom';
@@ -62,8 +63,8 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/article/:urlSlug" element={<Article />} />
           <Route path="/editor" element={<NewArticle />} />
-          {/* <Route path="/editor/:urlSlug" element={<EditArticle />} />
           <Route path="/settings" element={<Settings />} />
+          {/* <Route path="/editor/:urlSlug" element={<EditArticle />} />
           <Route path="/profile/:userId/*" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} /> */}
         </Routes>
