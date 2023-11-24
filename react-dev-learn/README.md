@@ -59,12 +59,12 @@ export default function Gallery() {
 #### Importing and Exporting Components
 
 - default export
- - `export default function MyComponent() { ... }`
- - `import MyComponent from './MyComponent';`
+  - `export default function MyComponent() { ... }`
+  - `import MyComponent from './MyComponent';`
 - named export
- - `export function MyComponent() { ... }` 
- - `import { MyComponent } from './MyComponent';`
-  - 
+  - `export function MyComponent() { ... }` 
+  - `import { MyComponent } from './MyComponent';`
+    - 
 
 #### Writing Markup with JSX
 
@@ -199,6 +199,174 @@ const listItems = people.map(person => <li>{person}</li>);
 ### Adding Interactivity
 
 https://react.dev/learn/adding-interactivity
+
+#### Responding to Events
+
+- JSXにイベントハンドラーを追加することで、ユーザーのアクションに応答することができる
+- propsとしてイベントハンドラーを渡すこともできる
+
+```js
+export default function App() {
+  return (
+    <Toolbar
+      onPlayMovie={() => alert('Playing!')}
+      onUploadImage={() => alert('Uploading!')}
+    />
+  );
+}
+
+function Toolbar({ onPlayMovie, onUploadImage }) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}>
+        Play Movie
+      </Button>
+      <Button onClick={onUploadImage}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+```
+
+- Event propagation
+  - イベントはツリーの上に向けて伝播する
+  - `e.stopPropagation();`でイベントの伝播を止めることができる
+
+#### State: A Component's Memory
+
+- コンポーネントはよくインタラクションの結果として画面の状態を変更する必要がよくある
+- その場合に `useState`フックをつかって、コンポーネントに state を追加できる
+- `useState`フックは、初期値の設定、現在の値と値を更新する関数を返す
+- 慣例として`useState`の変数名は、`const [something, setSomething]`のようにする。プロジェクト間で理解しやすくなる。
+- state はコンポーネントのインスタンスでプライベート。同じコンポーネントをレンダリングしても、それぞれの state は独立している
+
+```js
+const [showMore, setShowMore] = useState(false);
+```
+
+#### Render and Commit
+
+- コンポーネントが画面に表示される前に、Reactによりレンダーが呼ばれる
+- このプロセスを理解することで、コードがどのように実行され、振る舞うかを考えることができる
+
+UI trhee steps
+
+1. Trigger : Reactのレンダーをトリガーする
+  - 以下2ケースでレンダーがトリガーされれる
+  - コンポーネントの初期レンダーとき
+  - steteが更新されたとき
+2. Render : Reactはコンポーネントを呼び出して、画面に何を表示するか決定する
+  - レンダリングとはReactがコンポーネントを呼び出すこと
+  - コンポーネントはツリー構造になっているので、レンダーは再帰的に呼び出される
+  - 初期レンダーの場合、Reactはルートコンポーネントを呼び出す
+  - 再レンダーの場合、stateが更新されたコンポーネントを呼び出して、差分を計算する
+3. Commit : ReactはDOMに変更を反映する
+
+  - ReactはDOMを直接変更するのではなく、変更をバッファリングしてから一度に変更する
+  - これにより、パフォーマンスが向上する
+  - 初期レンダーの場合、Reactは`appendChild()` DOM APIを使いすべてのDOMノードを作成する
+  - 再レンダーの場合、Reactは必要最小限の変更（レンダー時に計算された）をDOMに反映する
+
+#### State as a Snapshot
+
+- 通常のJavaScriptの変数とは異なり、state はスナップショットのように振る舞う
+  - stateを更新することで、再レンダーがトリガーされる
+  - Reactはstateをコンポーネントの齟齬側で保持する
+  - `useState`を使うと、Reactはレンダーのためにstateのスナップショットを提供する
+- state を変更してもそのレンダー中には値は変わらず、再レンダリングがトリガーされて値が変わる
+
+#### Queueing a Series of State Updates
+
+- stateの値を設定うすろと他のレンダーがキューされる
+- Reactはイベントハンドラー内のすべてのコードが実行されるまでstateの更新を待つ
+- バッチ処理と知られ、パフォーマンス向上や中途半端なレンダーを防ぐことができる
+
+stateを更新する関数の引数の命名規則
+
+- 関数の引数に対応するstateの値の最初の一文字を設定するのが一般的
+- 冗長だが、完全な変数名やプレフィックスをつけるなどの別の一般的な方法もある
+
+```js
+setEnabled(e => !e);
+setLastName(ln => ln.reverse());
+setFriendcount(fc => fc * 2);
+
+// 冗長だが、完全な変数名やプレフィックスをつけるなどの別の一般的な方法もある
+setEnabled(enabled => !enabled);
+setEnabeld(prevEnabled => !prevEnabled);
+```
+
+#### Updating Objects in State
+
+- state は Obujectを含むあらゆる型のJavaScriptの値を保持できる。
+- しかし、直接オブジェクトや配列を変更すべきではない。
+- 代わりに、既存のオブジェクトや配列をコピーして新しい値を作成してから、その値で state を更新する
+- `...` スプレッド構文を利用すると、オブジェクトや配列をコピーすることができる
+
+```js
+setPerson({
+  ...person, // 古いフィールドをコピー
+  firstName: e.target.value // firstNameのみオーバーライドする
+})
+
+// オブジェクトがネストしているケース
+setPerson({
+  ...person,
+  address: {
+    ...person.address,
+    city: e.target.value
+  }
+})
+```
+
+Reactでミュータブルなstateが推奨されていない理由
+
+- デバッグ：過去のレンダーでの変更を追跡するのは難しくなる
+- 最適化：Reactの最適化戦略で変更があったかどうかを判断するのは難しくなる（`prevObj === obj` で変更があったか確認できなくなる）
+- 新機能：stateをスナップショットのように扱うことを前提にReactの新機能を作っているので、新機能が使えなくなる可能性がでてくる
+- シンプルな実装：ミュータブルなstateをサポートするためにコードが複雑になってしまう
+
+#### Updating Arrays in State
+
+- 配列はミュータブルなJavaScriptのオブジェクト
+- state内の配列はオブジェクトと同じように読み取り専用（イミュータブル）として扱うべき
+
+イミュータブルな配列操作
+
+- 追加
+  - Good: `concat`, `[...arr]`
+  - Bad: `push`, `unshift`
+- 削除
+  - Good: `filter`, `slice`
+  - Bad: `pop`, `shift`, `splice`
+- 変換
+  - Good: `map`
+  - Bad: `splice`, `arr[i] =`
+- 並び替え
+  - Good: `[...arr]`などで先に配列をコピーしてから並び替え
+  - Bad: `reverse`, `sort`
+
+```js
+// 配列に追加
+setArtists([
+  ...artists, // 古い配列をコピー
+  { id: nextId++, name: name }
+]);
+
+// 配列から削除
+setArtists(
+  artists.filter(artist => artist.id !== id)
+);
+```
 
 ### Managing State
 
