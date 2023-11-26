@@ -1,3 +1,4 @@
+
 https://react.dev/learn (2023/11)
 ---
 
@@ -39,6 +40,12 @@ https://react.dev/learn/typescript
   - UIを宣言的に書く
   - 純粋関数
   - 何が嬉しいか？
+  - レンダリング（JSXを返す）
+  - イベントハンドラー（ボタンクリックや入力などのユーザー操作によって引き起こされる）
+- Reactのフェイズ
+  - trigger -> render -> commit
+  - refはコミット時にセットされる、effectはレンダリングが完了したあとに実行されるなどあるので頭に入れておくと開発でうまく行かないときに原因にたどり着きやすくなる
+  - HooksはJSのローカル変数のように見えるが、内部的にあhReactによって管理されている。それぞれに応じた使い方が求められる
 - useState
 - useReducer
   - useStateとuseReducerの比較
@@ -48,7 +55,16 @@ https://react.dev/learn/typescript
   - contextを使用する前に
   - コンテキストのユースケース
   - https://react.dev/learn/passing-data-deeply-with-context
+- useRef
+  - refとstateの違い
+  - refのユースケース
+  - refのベストプラクティス
+  - https://react.dev/learn/referencing-values-with-refs
+  - refを使ったDOM操作のベストプラクティス
+  - https://ja.react.dev/learn/manipulating-the-dom-with-refs
 - useEffect
+  - エフェクトでのデータ取得に代わる良い代替手段は何ですか?
+    - https://react.dev/learn/synchronizing-with-effects
 
 ### Describing the UI
 
@@ -540,3 +556,215 @@ function Page() {
 ### Escape Hatches (Advanced)
 
 https://react.dev/learn/escape-hatches
+
+#### Refを使用した値の参照
+
+- コンポーネントに何らかのデータを保持したいが、そのデータによって再レンダリングをしたくない場合はrefが使える
+
+```js
+const ref = useRef(0); // { current: any } の形式で値を保持する
+
+function handleClick() {
+  ref.current++; // ミュータブルな値として扱えるので即座に反映される
+  alert('You cliicked ' + ref.current + ' times!');
+}
+```
+
+- refのユースケース
+  - タイムアウトIDの保存
+  - DOM操作の保存と操作
+  - JSXの計算に必要のないほかのオブジェクトを保存
+- refのベストプラクティス
+  - コンポーネントの挙動が予測しやすくなる
+    - refは特別なケースでのみ使用する
+      - アプリケーションロジックやデータフローの多くでrefに依存してはいけない
+      - refの使用はブラウザAPIを参照するときなど極一部に抑える
+    - レンダリング中に`ref.current`を読み書きしない
+      - Reactは`ref.current`がいつ変更されたか認識しないため、レンダリング中に
+      - Reactは`ref.current`が変更されたタイミングを認識しないため、レンダリング中に読みこむだけでも、コンポーネントの挙動が予測しづらくなる
+      - 唯一の例外は、`if (!ref.current) ref.current = new Thing()`のように最初のレンダリング中に一度だけ値をセットするコード
+    - refを使っている場合は、イミュータブルにすることを考慮しなくてよい
+      - ref自体は通常のJavaScriptオブジェクトにすぎないため、ミュータブルに扱ってもよい
+
+#### RefでDOMを操作する
+
+- Reactはレンダリング結果に合わせてDOMを自動的に更新するため、通常はDOMを直接操作する必要はない
+- しかし、ノードにフォーカスしたり、スクロールしたり、サイズや位置を測定するためにDOM要素にアクセスする必要がある
+- Reactには組み込みで実施する方法がないので、DOMノードへの参照が必要になる
+
+```js
+import { userRef } from 'react';
+
+function MyComponent() {
+  const myRef = useRef(null);
+
+  function handleClick() {
+    // ブラウザAPIを使うことができる
+    myRef.current.focus();
+  }
+
+  return (
+    <>
+      <input ref={myRef} />
+      <button onClick={handleClick}>Focus the input</button>
+    </>
+  )
+}
+```
+
+- Reactがrefをアタッチするタイミング
+  - Reactはコミット中に`ref.current`をセットする。具体的には、DOMを更新する前に影響を受ける`ref.current`の値を`null`に設定し、DOMを更新したあとすぐにDOMノードを`ref.current`にセットする
+  - `ref`にアクセスするのは通常イベントハンドラであり、レンダリングでは使うのは望ましくない。
+- refを使ったDOM操作のベストプラクティス
+  - refはReactの外にひみだす必要がある場合のみに利用する
+    - よくある例は、フォーカスの管理、スクロール位置の管理、Reactが公開していないブラウザAPIの呼び出しなど
+    - 非破壊的なアクションの利用に留めておけば問題は発しないはず
+  - React によって管理されるDOMノードを変更しない
+    - DOMをref経由で書き換えようとすると、Reactと競合してエラーになるリスクがある
+
+
+#### Effectとの同期
+
+- 一部のコンポーネントは外部システムと同期する必要がある
+- 例えば、React外のコンポーネントを制御したり、サーバーとのAPI通信をしたり、分析ログを送信したりする
+- Effectを使うと、レンダリング後にコードを実行できるため、コンポーネントを外部システムと同期できる
+- Strict Modeが有効な場合、バグを見つけるためにマウント後にすべてのコンポーネントを1回再マウントする。
+
+```js
+// Effectを宣言する
+import { useEffect } from 'react';
+
+function ChatRoom() {
+  useEffect(() => {
+    const connection = createConnection();
+    connection.connect();
+
+    return () => {
+      connection.disconnect();
+    };
+  }, []);
+
+  return <h1>Welcome to the chat!</h1>;
+}
+```
+
+Effectを使う一般的なパターン
+
+- React外のコンポーネントの制御
+- イベントのSubscribe
+- アニメーションのトリガー
+- データの取得
+- 分析イベントの送信
+
+Effectを使わない
+
+- アプリケーションの初期化
+  - 起動時に1回だけ実行する必要がある処理は、コンポーネントの外に置くことができる
+  - ```js
+    if (typeof window !== 'undefined') {
+      // 初期化処理
+      checkAuthToken();
+      loadDataFromLocalStorage();
+    }
+
+    function App() {
+      // ...
+    }
+    ```
+- POSTリクエスト
+  - イベントハンドラーで実行すべき
+  - ```js
+    useEffect(() => {
+      // 🔴 画面表示のたびに呼ばれてしまう
+      fetch('/api/buy', { method: 'POST'  });
+    }, [])
+    ```
+
+#### Effectは必要ないかもしれない
+
+Effetを使う必要がないケース
+
+- propsやstateにもとづいて状態を更新する
+  - コンポーネント内で計算すればよい
+  - ```js
+    // 🔴 Avoid: redundant state and unnecessary Effect
+    const [fullName, setFullName] = useState('');
+    useEffect(() => {
+      setFullName(firstName + ' ' + lastName);
+    }, [firstName, lastName]);
+
+    // ✅ Good: calculated during rendering
+    const fullName = firstName + ' ' + lastName;
+    ```
+- 高価な計算をキャッシュする
+  - メモ化したい場合は`useMemo()`を使う
+  - ```js
+    // 🔴 Avoid: redundant state and unnecessary Effect
+    const [visibleTodos, setVisibleTodos] = useState([]);
+    useEffect(() => {
+      setVisibleTodos(getFilteredTodos(todos, filter));
+    }, [todos, filter]);
+
+    const visibleTodos = useMemo(() => {
+      // ✅ Does not re-run unless todos or filter change
+      return getFilteredTodos(todos, filter);
+    }, [todos, filter]);
+    ```
+- 親にデータを渡す
+  - Reactではデータは親から子コンポーネントに流れる
+  - データフローを追跡するのが難しくなる
+
+#### Effectのライフサイクル
+
+- Effectにはコンポーネントとは異なるライフサイクルをもっている
+  - コンポーネントはマウント、更新、アンマウントの3つがある
+  - Effectは同期を開始と同期を停止の2つのみ
+- Effectのコードを読み書きするときは、Effectの視点で考える
+  - コンポーネントのマウント、アンマウント、依存配列の値が変更されると同期の開始や停止がされる
+  - 依存配列を指定しない場合はレンダリングのたびに呼ばれる
+  - 依存配列が空配列（`[]`）の場合は、コンポーネントにマウント時とアンマウント時に呼び出される
+  - リンタが依存配列をチェックしてくれる。
+- 1つのEffectは独立した1つの同期の処理にする
+  - 関係のないロジックを同じEffectに追加しない
+  - 例えば、チャットルームの接続処理と分析用イベントの処理を同じEffectに書かない
+  - 接続処理を拡張して依存配列の値が増えた場合、分析用イベントの発火タイミングも変わって意図しないものになりえるため
+
+#### イベントとEffectを切り離す
+
+- イベントハンドラ
+  - ユーザー操作に応答して実行される
+  - ロジックはリアクティブではない
+- Effect
+  - 同期が必要になるたびに実行される
+  - ロジックはリアクティブである
+- EffectEvent
+  - 非リアクティブなロジックはEffectから切り離す必要がある
+  - `useEffectEvent()`を使うことで非リアクティブなロジックを抽出できる
+  - ⚠ `useEffectEvent()`は23/11時点では実験的なAPI
+  - 呼び出せるのはEffectの内部だけ
+  - 他のコンポーネントやフックに渡してはいけない
+
+### Effectの依存を削除する
+
+- Effectの依存値としてのオブジェクトや関数は可能な限り避けるべき
+  - オブジェクト型や関数型の依存値は、Effectが必要以上に再同期される原因となるため
+  - 対策として、コンポーネントの外側やEffectの内側に移動させるか、プリミティブな値を抽出するほうがよい
+
+#### Custom Hooks で ロジックを再利用する
+
+- カスタムフックを使ってコンポーネント間でロジックを共有できる
+  - カスタムフックの名前は`use`で初めて大文字を続ける必要がある
+  - カスタムフックはstate自体ではなく、stateを使うロジックを共有する
+  - すべてのフックはコンポーネントが再レンダリングされるたびに実行される
+  - カスタムフックのコードは、純粋関数である必要がある
+- カスタムフックは具体的かつ高レベルなユースケースに対して使う
+  - カスタムフックに抽出することでデータの流れが明示的になる
+  - 良いカスタムフックとは、動作を制約することで呼び出し側のコードをより宣言的にするもの
+  - 理想的にはカスタムフックの名前はコードをあまり書かない人でも何をするのか推測できるほどに明確であるべき
+    - ✅ `useData(url)`
+    - ✅ `useImpressionLog(eventName, extraData)`
+    - ✅ `useChatRoom(options)`
+  - 外部システムと同期する場合は、システム固有の専門用語を使用した技術的なものになるかもしれない
+    - ✅ `useMediaQuery(query)`
+    - ✅ `useSocket(url)`
+    - ✅ `useIntersectionObserver(ref, options)`
