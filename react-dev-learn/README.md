@@ -33,6 +33,23 @@ https://react.dev/learn/typescript
 
 ## Learn React
 
+サマリー
+
+- Reactのコンポーネント
+  - UIを宣言的に書く
+  - 純粋関数
+  - 何が嬉しいか？
+- useState
+- useReducer
+  - useStateとuseReducerの比較
+  - reducerをうまく書く
+  - https://react.dev/learn/extracting-state-logic-into-a-reducer
+- useContext
+  - contextを使用する前に
+  - コンテキストのユースケース
+  - https://react.dev/learn/passing-data-deeply-with-context
+- useEffect
+
 ### Describing the UI
 
 Reactコンポーネントの作成、カスタマイズ、条件で表示する方法を学ぶ
@@ -368,10 +385,158 @@ setArtists(
 );
 ```
 
-### Managing State
+### Managing State (Intermediate)
 
 https://react.dev/learn/managing-state
 
-### Escape Hatches
+#### stateを使ってインプットに応答する
+
+- コンポーネントでstateを使うことでUIを宣言的に書く
+- ユーザー入力に応答するためにstateを使う
+
+#### stateの構造を選ぶ
+
+- stateを適切に構造化すると、変更やデバッグがしやすいバグが発生しづらいコンポーネントになる
+- 最も重要な原則は、stateに冗長または重複した情報を含めるべきではない
+
+#### コンポーネント間のstateの共有
+
+- 一般的に行われる対応方法の1つとして、stateのリフトアップ（stateを最も近い共通の親に移動して、props経由で値を渡すこと）を行う
+
+#### stateの保存とリセット
+
+- Reactは、UIツリー内のコンポーネントの一に基づいてどの、stateがどのコンポーネントに属しているか追跡する
+- UIツリー内の同じ位置の同じコンポーネントはstateを保持する。別のノードがレンダーされたら破棄されるので、stateもリセットされる
+- サブツリーに別のキーを与えることで、サブツリーの状態を強制的にリセットできる
+
+#### state更新ロジックをReducerに抽出する
+
+- コンポーネントが複雑になるにつれて、stateが更新されるさまざまな方法をすべて一目で確認することが難しくなることがある
+- レンダリング中に呼ばれるので、reducerは純粋関数（副作用がない）でなければならない
+- stateの複数要素を更新する場合でも単一のユーザー操作を表すようにする
+
+```js
+function TaskApp() {
+  const [tasks, dispatch] = useReducer(taskReducer, initialTasks);
+
+  function handleAddTask(text) {
+    dispatch({ type: 'added', id: nextId++, text });
+  }
+  
+  ...
+
+  return (
+    <>
+      <h1>Task App</h1>
+      <AddTask onAddTask={handleAddTask} />
+      <TaskList
+        tasks={tasks}
+        onChangeTask={handleChangeTask}
+        onDeleteTask={handleDeleteTask}
+      />
+    </>
+  )
+}
+
+function taskReducer(tasks, action) {
+  switch (action.type) {
+    case 'added': {
+      return [...tasks, { id: action.id, text: action.text, completed: false }];
+    }
+    case 'toggled': {
+      return tasks.map(task => {
+        if (task.id === action.id) {
+          return { ...task, completed: !task.completed };
+        }
+        return task;
+      });
+    }
+    case 'deleted': {
+      return tasks.filter(task => task.id !== action.id);
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+}
+```
+
+#### contextでデータを渡す
+
+- 通常、propsを使って親から子のコンポーネントへデータを渡す
+- 途中で多くのコンポーネントを介する場合やアプリ内の多くのコンポーネントが同じデータを必要とする場合は、propsの受け渡しは冗長になる可能性がある
+- contextを使用すると、明示的にpropsで渡さなくてもツリー配下のコンポーネントでデータを利用できるようになる
+
+```js
+// contextを作成
+const LevelContext = createContext(1);
+
+// contextを利用する
+function Heading({ children }) {
+  const level = useContext(LevelContext);
+
+  switch (level) {
+    case 1:
+      return <h1>{children}</h1>;
+    case 2:
+      return <h2>{children}</h2>;
+    case 3:
+      // ...
+    default:
+      throw Error('Unknown level: ' + level);
+  }
+}
+
+// contextを提供する
+function Section({ level, children }) {
+  const level = useContext(LevelContext);
+
+  return (
+    <section className="section">
+      <LevelContext.Provider value={level + 1}>
+        {children}
+      </LevelContext.Provider>
+    </section>
+  )
+}
+
+function Page() {
+  return (
+    <Section>
+      <Heading>Title</Heading>
+      <Section>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Section>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+        </Section>
+      </Section>
+    </Section>
+  )
+}
+```
+
+- contextを使う前に...
+  - propsを渡すところから初めてみる
+    - コンポーネント間で多くのpropsを渡すことは珍しいことではない。
+    - 面倒かもしれないが、コンポーネントがどのデータを使用しているかが非常に明確になるのでpropsを使い続けるのは悪くない
+  - コンポーネントを抽出し、`children`を渡す
+    - 中間コンポーネントの抽出を忘れてしまったケースかもしれない
+    - 例えば、`<Layout posts={posts} />`の代わりに、`<Layout><Posts posts={posts} /></Layout>`とする
+- contextのユースケース
+  - テーマ設定: ダークモードなどユーザーが外観を変更できる場合、contextを使うとすべてのコンポーネントでテーマを利用できる
+  - 現在のアカウント: 多くのコンポーネントは、現在ログインしているユーザーを知る必要がある。context内に配置すると、ツリー内のどこからでも読みやすくなる。
+  - ルーティング: ほとんどのルーティングでは内部でcontextを使用して現在のルートを保持している
+  - stateの管理: アプリが成長するにつれて、アプリの上部近くに多くのstateが存在するようになる可能性がある。遠く離れたコンポーネントはこのstateを変更する必要がでてきて、手間がかかる。contextとreducerを併用するのが一般的。
+
+#### reducerとcontextによるスケールアップ
+
+- reducerとcontextを組み合わせることで、複雑な画面の状態を管理できる
+  - stateと`dispatch()`を返すそれぞれ返すcontextを作成する
+  - reducerを使用するコンポーネントから両方のcontextを提供する
+  - contextを読み取る必要があるコンポーネントからいずれかのcontextを使用する
+
+### Escape Hatches (Advanced)
 
 https://react.dev/learn/escape-hatches
