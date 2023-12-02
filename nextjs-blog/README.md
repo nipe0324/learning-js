@@ -20,8 +20,10 @@ https://nextjs.org/learn-pages-router/basics/create-nextjs-app
 - Pre-rendering and Data Fetching
   - pre-renderingは、初期ロード時にHTMLを読み込む。そして、Reactコンポーネントを初期化してインタラクティブにする（Hydration）
   - Next.jsはpre-renderingとして、Static GenerationとServer-side Renderingの2つをサポートしている
-  - Static Generationはビルド時にHTMLを生成する。`getStaticProps`で外部データを取得できる
-  - Server-side Renderingはリクエスト時にHTMLを生成する。`getServerSideProps`で外部データを取得できる
+  - Static Site Generation(SSG)はビルド時にHTMLを生成する。`getStaticProps`で外部データを取得できる
+  - Server-side Rendering(SSR)はリクエスト時にHTMLを生成する。`getServerSideProps`で外部データを取得できる
+- Dynamic Routes
+  - `getStaticPaths`使うと、SSGで動的なルートを作成できる。そして、ページ作成時に`getStaticProps`で外部データを取得できる
 
 ## Development
 
