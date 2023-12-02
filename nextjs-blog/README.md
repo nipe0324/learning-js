@@ -24,6 +24,9 @@ https://nextjs.org/learn-pages-router/basics/create-nextjs-app
   - Server-side Rendering(SSR)はリクエスト時にHTMLを生成する。`getServerSideProps`で外部データを取得できる
 - Dynamic Routes
   - `getStaticPaths`使うと、SSGで動的なルートを作成できる。そして、ページ作成時に`getStaticProps`で外部データを取得できる
+- API Routes
+  - 公開APIをNext.jsで作成できる
+  - `pages/api`ディレクトリ配下にファイルを置くと、APIルートとして認識される
 
 ## Development
 
