@@ -35,3 +35,17 @@ starts the development server.
 ```bash
 npm run dev
 ```
+
+## Deploy
+
+`.next`フォルダ内にproduction用のアプリをビルドする
+
+```bash
+npm run build
+```
+
+Node.js serverを起動する
+
+```bash
+npm run start
+```
