@@ -76,7 +76,10 @@ export default function App() {
                 name="q"
                 defaultValue={q || ""}
                 onChange={(event) => {
-                  submit(event.currentTarget);
+                  const isFetchSearch = q === null;
+                  submit(event.currentTarget, {
+                    replace: !isFetchSearch,
+                  });
                 }}
               />
               <div id="search-spinner" aria-hidden hidden={!searching} />
