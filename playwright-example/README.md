@@ -1,6 +1,19 @@
+<!-- omit in toc -->
 # playwright example
 
 https://playwright.dev/
+
+- [Commands](#commands)
+- [Write tests](#write-tests)
+  - [Actions](#actions)
+  - [Assertions](#assertions)
+  - [Test Hooks](#test-hooks)
+  - [Annotations](#annotations)
+  - [Others](#others)
+- [Configuration](#configuration)
+  - [Emulation](#emulation)
+  - [Others](#others-1)
+
 
 ## Commands
 
@@ -33,6 +46,8 @@ Recorde tests
 ```sh
 npx playwright codegen demo.playwright.dev/todomvc
 ```
+
+more: https://playwright.dev/docs/test-cli
 
 ## Write tests
 
@@ -101,3 +116,68 @@ test.describe('navigation', () => {
   });
 });
 ```
+
+### Annotations
+
+Group tests
+
+```js
+test.describe('two tests', () => {
+  test('one', async ({ page }) => {
+    // ...
+  });
+
+  test('two', async ({ page }) => {
+    // ...
+  });
+});
+```
+
+Skip test
+
+```js
+test.skip('skip this test', async ({ page )} => {
+  // This test is not run
+});
+
+// Conditionally skip a test
+tess('skip this test', async ({ page, browserName }) => {
+  test.skip(browserName === 'firefox', 'Still working on it';)
+})
+```
+
+more: https://playwright.dev/docs/test-annotations
+
+### Others
+
+- Parameterrize tests: https://playwright.dev/docs/test-parameterize
+- Fixtures: https://playwright.dev/docs/test-fixtures
+- Global setup and teardown: https://playwright.dev/docs/test-global-setup-teardown
+- Timeouts: https://playwright.dev/docs/test-timeouts
+  - Test timeout: デフォルト 30000 ms
+  - Expect timeout: デフォルト 5000 ms
+
+## Configuration
+
+### Emulation
+
+- Devices
+  - registory: https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
+- Viewport
+- Locale & Timezone
+- Permissions
+- Geolocation
+- Color Scheme and Media
+- User Agent
+- Offline
+- JavaScript Enabled
+
+more: https://playwright.dev/docs/emulation
+
+### Others
+
+- Parallelism: https://playwright.dev/docs/test-parallel
+- Projects: https://playwright.dev/docs/test-projects
+  - 同じ設定を使ってテストを実行する論理的なグループ
+- Reporter: https://playwright.dev/docs/test-reporters
+  - Line, Dot, HTML, JSON などの形式でテスト結果を出力できる
