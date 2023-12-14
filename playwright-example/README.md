@@ -8,6 +8,7 @@ https://playwright.dev/
   - [テスト哲学](#テスト哲学)
   - [ベストプラクティス](#ベストプラクティス)
 - [Write tests](#write-tests)
+  - [Locators](#locators)
   - [Actions](#actions)
   - [Assertions](#assertions)
   - [Test Hooks](#test-hooks)
@@ -63,7 +64,7 @@ more: https://playwright.dev/docs/test-cli
 
 ### テスト哲学
 
-- ユーザーに見える振る舞いをテストする
+- E2Eテストではユーザーに見える振る舞いをテストする
     - エンドユーザーに対して機能することを検証するためのもののため、関数名や配列などユーザーが見ない知らない実装の詳細に依存することは避ける
 - 可能な限りテスト同士を分離させる
     - テストの分離により、再現性が向上し、デバッグが容易になり、連鎖的なテストの失敗を防ぐことができる
@@ -74,46 +75,119 @@ more: https://playwright.dev/docs/test-cli
 ### ベストプラクティス
 
 <!-- omit in toc -->
-#### locatorを使う
+#### ロケーターを使う
 
-TBD
-
-<!-- omit in toc -->
-#### locatorを生成する
-
-TBD
-
-<!-- omit in toc -->
-#### 最初にアサーションを使う
+ロケーターは、要素が表示かつ有効になるまで自動で待機してリトライする機能がある。テストのレジリエンスを高めるため利用推奨
 
 ```ts
 // 👍
+page.getByRole('button', { name: 'submit' });
+```
+
+XSSやCSSではなく、ユーザー向けの属性の利用を推奨。
+
+```ts
+// 👎 DOM構造やCSSは変わりやすいのでテストが失敗しやすくなる
+page.locator('button.buttonIcon.episode-actions-later');
+
+// 👍
+page.getByRole('button', { name: 'submit' });
+```
+
+<!-- omit in toc -->
+#### test generatorでlocatorを生成する
+
+[test generator](https://playwright.dev/docs/codegen)でテストを生成できる。ロール、テキスト、test idなどからレジリエンスが高くユニークに識別できるロケーターを生成してくれる。
+
+<!-- omit in toc -->
+#### web first assertions を使う
+
+[web first assertions](https://playwright.dev/docs/test-assertions)を使うことで要素が有効になるまで待機してくれるのでテストの実行が安定する。
+
+```ts
+// 👍 要素が有効になるまで待機してくれる
 await expect(page.getByText('welcome')).toBeVisible();
 
-// 👎
+// 👎 すぐにアサーションが走ってしまう
 expect(await page.getByText('welcome').isVisible()).toBe(true);
 ```
 
 <!-- omit in toc -->
-#### Debugを設定する
+#### Playwrightの関連ツールを使う
 
-TBD
-
-<!-- omit in toc -->
-#### Playwrightのツールを使う
-
-TBD
+- [VS Code extension](https://playwright.dev/docs/getting-started-vscode) : テストの作成、実行、デバッグ時に優れた開発者体験を得られる
+- [test generator](https://playwright.dev/docs/codegen) : テストを生成し、ロケーターを選択できる
+- [trade viewer](https://playwright.dev/docs/trace-viewer) : タイムライン表示、各アクションのDOMスナップショットの検査、ネットワークリクエストの表示などのトレースができる
+- [UI Mode](https://playwright.dev/docs/test-ui-mode) : タイムトラベル機能を使いながらテストを探索、実行、デバッグできる。
 
 <!-- omit in toc -->
 #### すべてのブラウザーでテストする
 
-TBD
+Playwrightでは簡単に複数ブラウザでテストを実行できる。  
+すべてのブラウザでテストをすることで、すべてのユーザーに対してアプリケーションが動作することを確認できる。
+
+```ts
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
+});
+```
 
 More: https://playwright.dev/docs/best-practices
 
 ## Write tests
 
 Playwrightのテストはシンプルで、アクションを実行し、そして、期待に対して状態をアサートする
+
+### Locators
+
+ロケーターは、ページ上の要素を見つけるために使う
+
+- `page.getByRole()`: 明示的か暗黙的なアクセサビリティ属性で要素を探す
+- `page.getByText()`: テキストで要素を探す
+- `page.getByLabel()`: フォームコントロールの関連づいたラベルのテキストを要素を探す。フォームで利用する。
+- `page.getByPlaceholder()`: プレースホルダーによって要素を探す。関連づいたラベルがないフォームコントロールで利用する
+- `page.getByAltText()`: alt属性によって要素を探す。主に画像に使う。
+- `page.getByTestId()`: `data-testid`属性によって要素を探す。ロールやテキストの値が重要な場合は、`getByRole()`や`getByText()`の使用をするか判断必要。
+
+`locator.filter()`メソッドでフィルターができる
+
+```js
+await page
+    .getByRole('listitem')
+    .filter({ hasText: /Product 2/ }) // filter by text
+    .getByRole('button', { name: 'Add to cart' })
+    .click();
+```
+
+リストの要素を検証する
+
+```js
+// リストの要素が3つあることを検証する
+await expect(page.getByRole('listitem')).toHaveCount(3);
+
+// リストの要素の値がapple, banana, orangeであることを検証する
+await expect(page
+    .getByRole('listitem'))
+    .toHaveText(['apple', 'banana', 'orange']);
+```
+
+More: https://playwright.dev/docs/locators
 
 ### Actions
 
@@ -250,6 +324,8 @@ more: https://playwright.dev/docs/test-annotations
 
 ### Others
 
+- Test generator: https://playwright.dev/docs/codegen
+  - 使い方のイメージがつくので動画みると良い
 - Parameterrize tests: https://playwright.dev/docs/test-parameterize
 - Fixtures: https://playwright.dev/docs/test-fixtures
 - Global setup and teardown: https://playwright.dev/docs/test-global-setup-teardown
@@ -358,9 +434,84 @@ More: https://playwright.dev/docs/api-testing
 
 ### Authentication
 
-TBD: https://playwright.dev/docs/auth
+Playwrightは、ブラウザコンテキストと呼ばれる分離された環境でテストを実行する。認証が必要なサービスにおいて毎回のテストで認証を実行するのは面倒。そのため、既存の認証済みの状態をロードすることができる。これにｙり、テストで認証する必要があなくなり、テスト実行が高速化される。
+
+認証状態を保持する`.auth`ディレクトリを作成し、`.gitignore`に追加しておく
+
+```sh
+mkdir -p playwright/.auth
+echo "\nplaywright/.auth" >> .gitignore
+```
+
+すべてのテストでアカウントを共有する
+
+```ts
+// tests/auth.setup.ts
+import { test as setup, expect } from '@playwright/test';
+
+const authFile = 'playwright/.auth/user.json';
+
+setup('authenticate', async ({ page }) => {
+    // 認証ステップ（自分自身の操作に置き換えてください）
+    await page.goto('https://github.com/login');
+    await page.getByLabel('Username or email address').fill('username');
+    await page.getByLabel('Password').fill('password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    // ページがcookieを受け取るまで待つ
+    // ログインフローでは、複数回のリダイレクトが起きたりするた最終的なログイン後のURLになるまで待つ
+    await page.waitForURL('https://github.com/');
+    // 別の方法としてページを確認する方法もある
+    // await expect(page.getByRole('button', { name: 'View profile and more' })).toBeVisible();
+
+    // 認証状態をファイルに保存する
+    await page.context().storageState({ path: authFile });
+})
+```
+
+プロジェクトの設定ファイルに追加する
+
+```ts
+// playwright.config.ts
+import { defineConfig, devices } from '@playwright/test';
+
+export default defaultConfig({
+  projjects: [
+    // Setup project
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        // 認証状態を事前に読み込む
+        storageState: 'palywright/.auth/user.json',
+      },
+      dependencies: ['setup'],
+    }
+
+    // ...
+  ]
+})
+```
+
+テストを書く
+
+```ts
+import { test } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  // page is authenticated
+})
+```
+
+More: https://playwright.dev/docs/auth
 
 ### Othrs
 
 - Browsers: https://playwright.dev/docs/browsers
 - Chrome Extensions: https://playwright.dev/docs/chrome-extensions
+- Mock APIs: https://playwright.dev/docs/mock
+- Mock Browser APIs: https://playwright.dev/docs/mock-browser-apis
+- Screenshots: https://playwright.dev/docs/screenshots
+- Visual comparisions: https://playwright.dev/docs/test-snapshots
