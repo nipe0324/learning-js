@@ -279,6 +279,21 @@ JSON.parse(rawData) as ["grace", "frankie"]; // ["grace", "frankie"]型
 [0, ''] as const; // readonly [0, '']型
 ```
 
+enum構文あるが、23年時点ではenumぽく使いたい場合はオブジェクトを`as const`で使うとよさそう
+
+```ts
+const StatusCodes = {
+    Ok: 200,
+    Unauthorized: 401,
+    NotFound: 404,
+    Forbidden: 403,
+    InternalServerError: 500,
+    // ...
+} as const;
+
+StatusCodes.Ok; // 200
+```
+
 ## その他
 
 ### 宣言ファイル
