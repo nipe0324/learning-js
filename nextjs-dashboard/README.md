@@ -93,3 +93,7 @@ open http://localhost:3000
   - try-cacheでServer Actionsのハンドリングができる
   - `error.tsx`でエラー時の画面表示ができる
   - `not-found.tsx`で404のエラーハンドリングができる
+- Improving Accessibility
+  - アクセさびリティとは、障がいのある人も含む誰もが使用できるWebアプリケーションを設計および実装することを指す
+  - キーボードナビゲーション、セマンティックHTML、画像、色、ビデオなど多くの領域をカバーする広大なトピック
+  - client side validation
