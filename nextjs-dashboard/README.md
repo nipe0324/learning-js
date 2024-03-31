@@ -48,3 +48,7 @@ open http://localhost:3000
     - また、productionだとバックグラウンドでプレフェッチをする。そのため、リンクを押しさ時にすぐに画面が遷移する
   - More
     - [How Routing and Navigation Worls](https://nextjs.org/docs/app/building-your-application/routing/linking-and-navigating#how-routing-and-navigation-works)
+- Setting up Your Database
+  - Vercelでpostgresを作成
+  - ローカルからVercel Postgresに接続し、シードデータを投入
+  - Vercel上でPostgresにSQLを実行できる
