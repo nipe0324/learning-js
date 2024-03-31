@@ -40,3 +40,11 @@ open http://localhost:3000
   - 複数のページでレイアウトを共通化したいときに`layout.tsx`を作成する
     - 自動的にネストされた各ページに反映される
     - レイアウトを使うことで、ページコンポーネントだけレンダーされる（パーシャルレンダリング）
+- Navigating Between Pages
+  - `Link`コンポーネントを利用する
+    - `a`タグだと各ページ遷移時にページ全体が更新される
+    - ルートのセグメントによって、自動的にコード分割をする
+    - コード分割はページごとで独立していることを意味し、ページでエラーが起きても他の部分には影響を与えない
+    - また、productionだとバックグラウンドでプレフェッチをする。そのため、リンクを押しさ時にすぐに画面が遷移する
+  - More
+    - [How Routing and Navigation Worls](https://nextjs.org/docs/app/building-your-application/routing/linking-and-navigating#how-routing-and-navigation-works)
