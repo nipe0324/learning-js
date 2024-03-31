@@ -89,3 +89,7 @@ open http://localhost:3000
     - POSTリクエスト、暗号化されたクロージャ、厳格な入力チェック、エラーメッセージのハッシュ化、ホスト制限などの技術を通じてセキュリティの安全性を高めている
   - More
     - [How to Think About Security in Next.js](https://nextjs.org/blog/security-nextjs-server-components-actions)
+- Handling Errors
+  - try-cacheでServer Actionsのハンドリングができる
+  - `error.tsx`でエラー時の画面表示ができる
+  - `not-found.tsx`で404のエラーハンドリングができる
