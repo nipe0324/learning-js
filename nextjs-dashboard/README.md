@@ -34,4 +34,9 @@ open http://localhost:3000
   - More
     - [Image Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/images)
     - [Font Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)
-
+- Creating Layouts and Pages
+  - Next.jsはファイルシステムルーティングを利用している
+    - ex. app/dashboard/invoices -> /dashaobrd/invoices/page.tsx
+  - 複数のページでレイアウトを共通化したいときに`layout.tsx`を作成する
+    - 自動的にネストされた各ページに反映される
+    - レイアウトを使うことで、ページコンポーネントだけレンダーされる（パーシャルレンダリング）
