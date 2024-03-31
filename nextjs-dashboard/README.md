@@ -82,3 +82,10 @@ open http://localhost:3000
 - Adding Search and Pagination
   - Invoiceの検索、use-debounceで検索時のデバウンスを制御
   - Invoideのページネーション
+- Mutating Data
+  - Server Actionsとは
+    - クライアントコンポーネントやサーバーコンポーネトから呼び出すことができる非同期関数を作成し、サーバー上で非同期コードを直接実行できる
+    - データを変更するAPIエンドポイントを作成する必要がなくなる
+    - POSTリクエスト、暗号化されたクロージャ、厳格な入力チェック、エラーメッセージのハッシュ化、ホスト制限などの技術を通じてセキュリティの安全性を高めている
+  - More
+    - [How to Think About Security in Next.js](https://nextjs.org/blog/security-nextjs-server-components-actions)
