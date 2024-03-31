@@ -52,3 +52,8 @@ open http://localhost:3000
   - Vercelでpostgresを作成
   - ローカルからVercel Postgresに接続し、シードデータを投入
   - Vercel上でPostgresにSQLを実行できる
+- Fetching Data
+  - APIやDBからデータを取得する
+  - デフォルトでは、Next.jsはReact Server Componentを使う
+    - `useEffect`や`useState`、データ取得ライブラリではなく`async/await`を使える
+    - サーバー上で実行されるので、API層がなくてもDBに直接クエリを実行できる
