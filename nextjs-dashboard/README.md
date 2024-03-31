@@ -74,3 +74,11 @@ open http://localhost:3000
   - 2. 特定のコンポーネントレベルの場合、`<Suspense>`を使う
     - `<Suspense>`でローディングのコンポーネントを囲む
     - コンポーネント内でデータ取得をするようにする
+- Partial Prerendering
+  - Partial Prerenderingは、静的部分を先に表示し、動的部分は後から非同期で取得できる
+  - experimental future in Next.js 14
+  - 静的と動的が混在しているページはいくつもある
+  - 例えば、ECの商品ページの場合、商品情報は静的、カートやレコメンと商品は動的
+- Adding Search and Pagination
+  - Invoiceの検索、use-debounceで検索時のデバウンスを制御
+  - Invoideのページネーション
