@@ -57,3 +57,12 @@ open http://localhost:3000
   - デフォルトでは、Next.jsはReact Server Componentを使う
     - `useEffect`や`useState`、データ取得ライブラリではなく`async/await`を使える
     - サーバー上で実行されるので、API層がなくてもDBに直接クエリを実行できる
+- Static and Dynamic Rendering
+  - Stagic Rendering
+    - ビルド時にデータ取得してレンダリングする
+    - CDNにキャッシュされるので速い、サーバーロード時間を減らせる、SEOに強くなる
+  - Dynamig Rendering
+    - ユーザーがリクエストした時にコンテンツをレンダリングする
+    - リアルタイムデータ、ユーザー固有のコンテンツ、クッキーやURLパラメータなどのリクエスト時の情報で利用
+- Streaming
+  -
