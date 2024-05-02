@@ -4,10 +4,36 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+
+const client = new ApolloClient({
+  // GraphQLサーバーのURLを指定
+  uri: 'https://flyby-router-demo.herokuapp.com/',
+  // クエリ結果をキャッシュする時に使うキャッシュ方法
+  cache: new InMemoryCache(),
+});
+
+const query = gql`
+  query GetLocations {
+    locations {
+      id
+      name
+      description
+      photo
+    }
+  }
+`;
+
+client
+  .query({ query })
+  .then((result) => console.log(result));
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>
 );
 
