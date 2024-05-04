@@ -4,29 +4,30 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
+import { onError } from "@apollo/client/link/error";
+
+const httpLink = new HttpLink({
+  uri: "http://localhost:4000/",
+});
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ),
+    );
+
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
 
 const client = new ApolloClient({
-  // GraphQLサーバーのURLを指定
-  uri: 'https://flyby-router-demo.herokuapp.com/',
+  // Apollo Linkを利用
+  link: from([errorLink, httpLink]),
   // クエリ結果をキャッシュする時に使うキャッシュ方法
   cache: new InMemoryCache(),
 });
-
-const query = gql`
-  query GetLocations {
-    locations {
-      id
-      name
-      description
-      photo
-    }
-  }
-`;
-
-client
-  .query({ query })
-  .then((result) => console.log(result));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
