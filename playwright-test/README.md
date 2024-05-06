@@ -123,7 +123,7 @@ expect(await page.getByText('welcome').isVisible()).toBe(true);
 <!-- omit in toc -->
 #### すべてのブラウザーでテストする
 
-Playwrightでは簡単に複数ブラウザでテストを実行できる。  
+Playwrightでは簡単に複数ブラウザでテストを実行できる。
 すべてのブラウザでテストをすることで、すべてのユーザーに対してアプリケーションが動作することを確認できる。
 
 ```ts
@@ -202,7 +202,7 @@ await page.goto('https://playwright.dev/');
 Use a locator
 
 ```js
-const getStarted = page.getByRole('link', { name: 'Get Started' }); 
+const getStarted = page.getByRole('link', { name: 'Get Started' });
 await getStarted.click();
 ```
 
