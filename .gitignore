@@ -29,3 +29,6 @@ node_modules
 # remix
 .cache
 build
+
+# Cypress
+cypress.env.json
