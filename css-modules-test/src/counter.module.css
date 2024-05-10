@@ -1,0 +1,11 @@
+.counter {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 16px;
+  color: white;
+  background-color: blue;
+}
+
+.counter-large {
+  font-size: 24px;
+}
