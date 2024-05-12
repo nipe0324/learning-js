@@ -1,0 +1,7 @@
+/*
+  @layer はカスケードレイヤーを宣言するためのCSSのルールです
+  カスケードレイヤーは、スタイルの優先度をセレクターの詳細度よりもレイヤーを優先します
+
+  今回は、reset, base, tokens, recipes, utilities の5つのレイヤーを指定しています
+ */
+ @layer reset, base, tokens, recipes, utilities;
