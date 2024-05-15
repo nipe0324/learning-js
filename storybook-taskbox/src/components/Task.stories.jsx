@@ -1,3 +1,5 @@
+import { fn } from '@storybook/test';
+
 import Task from './Task';
 
 export default {
@@ -13,6 +15,8 @@ export const Default = {
       title: 'Test Task',
       state: 'TASK_INBOX',
     },
+    onArchiveTask: fn(),
+    onPinTask: fn(),
   },
 };
 
