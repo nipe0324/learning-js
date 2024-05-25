@@ -32,3 +32,6 @@ build
 
 # Cypress
 cypress.env.json
+
+# env
+.env
