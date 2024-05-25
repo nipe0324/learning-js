@@ -4,6 +4,9 @@ import Input from "@/components/input";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
+import { FcGoogle } from 'react-icons/fc';
+import { FaGithub } from 'react-icons/fa';
+
 type variant = 'login' | 'register';
 
 const Auth = () => {
@@ -89,6 +92,20 @@ const Auth = () => {
               onClick={variant === "login" ? login : register} >
               {variant === 'login' ? 'Sign in' : 'Create an account'}
             </button>
+            <div className='flex flex-row items-center gap-4 mt-8 justify-center'>
+              <div
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer haver:opacity-80 transition"
+                onClick={() => signIn('google', { callbackUrl: '/' })}
+              >
+                <FcGoogle size={30} />
+              </div>
+              <div
+                className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer haver:opacity-80 transition"
+                onClick={() => signIn('github', { callbackUrl: '/' })}
+              >
+                <FaGithub size={30} />
+              </div>
+            </div>
             <p className="text-neutral-500 mt-12">
               {variant === 'login' ? 'First time using Netflix?' : 'Already have an account?'}
               <span onClick={toggleVariant} className="text-white ml-1 hover:underline cursor-pointer">
