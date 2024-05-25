@@ -4,3 +4,12 @@ https://www.youtube.com/watch?v=mqUN4N2q4qY
 
 
 clones of clone : https://github.com/search?q=next-netflix-tutorial&type=repositories
+
+
+## Memo
+
+Push local prisma.scheme to mongodb
+
+```
+npx prisma db push
+```
