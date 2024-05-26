@@ -4,6 +4,7 @@ import { BsChevronDown, BsSearch, BsBell } from "react-icons/bs";
 import NavbarItem from "./NavbarItem";
 import MobileMenu from "./MobileMenu";
 import AccountMenu from "./AccountMenu";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const TOP_OFFSET = 66;
 
@@ -11,6 +12,8 @@ const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showAccountMenu, setShowAccountMenu] = useState<boolean>(false);
   const [showBackground, setShowBackground] = useState<boolean>(false);
+
+  const { data: currentUser } = useCurrentUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +75,7 @@ const Navbar = () => {
               <img src="/images/default-blue.png" alt="Profile" />
             </div>
             <BsChevronDown className={`text-white transition ${showAccountMenu ? 'rotate-180' : 'rotate-0'}`} />
-            <AccountMenu visible={showAccountMenu} />
+            <AccountMenu visible={showAccountMenu} currentUser={currentUser} />
           </div>
         </div>
       </div>
