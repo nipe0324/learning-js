@@ -9,6 +9,7 @@ clones of clone : https://github.com/search?q=Jotion-Notion-Clone&type=repositor
 ## Libraries
 
 - Next.js App Router
-- Tailwind CSS
-- shadcn-ui
-- Dark mode
+- Tailwind CSS : Styling, Dark Mode
+- shadcn-ui : Components
+- convex : Backend Service
+- clerk : Authentication
